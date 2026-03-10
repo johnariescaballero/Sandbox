@@ -1,0 +1,110 @@
+import pandas as pd
+from sqlalchemy import create_engine
+import sqlite3
+
+# --- 1. THE BASICS (Text & Spreadsheets) ---
+
+# CSV (Comma Separated)
+df_csv = pd.read_csv('data.csv')
+
+# Excel (Requires 'openpyxl' or 'xlrd' installed)
+df_excel = pd.read_excel('data.xlsx', sheet_name='Sheet1')
+
+# Plain Text (Fixed-width formatted files)
+df_fwf = pd.read_fwf('data.txt')
+
+# --- 2. WEB & API DATA ---
+
+# JSON (Common for Web APIs)
+df_json = pd.read_json('https://api.example.com/data.json')
+
+# HTML (Scrapes all <table> tags from a URL)
+# Returns a list of DataFrames
+list_of_tables = pd.read_html('https://en.wikipedia.org/wiki/List_of_countries_by_GDP')
+df_gdp = list_of_tables[0] 
+
+# XML
+df_xml = pd.read_xml('data.xml')
+
+# --- 3. DATABASES (SQL) ---
+
+# Using a SQLite connection
+conn = sqlite3.connect('my_database.db')
+df_sql = pd.read_sql_query("SELECT * FROM users", conn)
+
+# Using SQLAlchemy (Works for PostgreSQL, MySQL, etc.)
+# engine = create_engine('postgresql://user:pass@host:port/db')
+# df_sql_alt = pd.read_sql('table_name', engine)
+
+# --- 4. HIGH-PERFORMANCE / BIG DATA ---
+
+# Parquet (Highly compressed, industry standard for big data)
+df_parquet = pd.read_parquet('data.parquet')
+
+# Feather (Blazing fast for temporary local storage)
+df_feather = pd.read_feather('data.feather')
+
+# HDF5 (Used in scientific computing)
+df_hdf = pd.read_hdf('data.h5', key='dataset1')
+
+# Pickle (Native Python object serialization)
+df_pickle = pd.read_pickle('data.pkl')
+
+# --- 5. THE "UTILITY" LOADER ---
+
+# Clipboard (Turns whatever you just copied/Ctrl+C into a DataFrame)
+# df_clip = pd.read_clipboard() 
+
+print("All loaders initialized!")
+
+
+================================== Exporting or Saving File ==================================
+import pandas as pd
+from sqlalchemy import create_engine
+
+# --- 1. THE BASICS (Text & Spreadsheets) ---
+
+# CSV (index=False prevents Pandas from adding a row-number column)
+df.to_csv('exported_data.csv', index=False)
+
+# Excel (Requires 'openpyxl' installed)
+df.to_excel('exported_data.xlsx', sheet_name='Results', index=False)
+
+# Plain Text (Tab-separated)
+df.to_csv('exported_data.txt', sep='\t', index=False)
+
+# --- 2. WEB & API FORMATS ---
+
+# JSON (orient='records' is most common for web apps)
+df.to_json('exported_data.json', orient='records', indent=4)
+
+# HTML (Generates a raw <table> string for a website)
+df.to_html('table.html', index=False)
+
+# XML
+df.to_xml('exported_data.xml', index=False)
+
+# --- 3. DATABASES (SQL) ---
+
+# Using SQLAlchemy to push to a database
+engine = create_engine('sqlite:///my_database.db')
+# if_exists='replace' overwrites the table; 'append' adds to it
+df.to_sql('new_table_name', engine, if_exists='replace', index=False)
+
+# --- 4. HIGH-PERFORMANCE / BIG DATA ---
+
+# Parquet (Fastest and smallest file size for large data)
+df.to_parquet('exported_data.parquet')
+
+# Feather (Best for short-term storage between Python scripts)
+df.to_feather('exported_data.feather')
+
+# Pickle (Saves the exact Python object state)
+df.to_pickle('exported_data.pkl')
+
+# --- 5. THE UTILITY EXPORT ---
+
+# Clipboard (Instantly "Copy" the data so you can "Paste" it into Excel/Slack)
+# df.to_clipboard(index=False)
+
+print("Data exported successfully!")
